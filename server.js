@@ -2,12 +2,14 @@ import express from 'express'
 import cors from 'cors'
 import 'dotenv/config'
 import joyasRouter from './routes/joyasRoutes.js'
+import { joyasLog } from './middleware/joyasMiddleware.js'
 
 const PORT = process.env.PORT || 3000
 const app = express()
 
 app.use(cors())
 app.use(express.json())
+app.use(joyasLog)
 
 app.use('/', joyasRouter)
 
