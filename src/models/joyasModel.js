@@ -1,16 +1,17 @@
 import pool from '../../database/config.js'
 import format from 'pg-format'
 
-export const getAllJoyasModel = async ({ limits = 3, order_by = 'id_ASC', page = 1}) => {
+export const getAllJoyasModel = async ({ limits= 'ALL', order_by = 'id_ASC', page = 1}) => {
 
     const [campo, direccion] = order_by.split('_')
-    const offset = (page - 1) * limits  
+    const offset = limits === 'ALL' ? 0 : (page - 1) * limits
+    const limitClause = limits === 'ALL' ? 'ALL' : limits
 
     const formattedQuery = format(
         'SELECT * FROM inventario ORDER BY %s %s LIMIT %s OFFSET %s',
         campo,
         direccion,
-        limits,
+        limitClause,
         offset
     )
 
