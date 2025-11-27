@@ -22,11 +22,17 @@ export const getAllJoyasModel = async ({ limits = 3, order_by = 'id_ASC', page =
 export const getJoyasFilterModel = async ({ precio_min, precio_max, categoria, metal }) => {
 
     let filters = []
+    const values = []
 
-    if (precio_min) filters.push(`precio >= ${precio_min}`)
-    if (precio_max) filters.push(`precio <= ${precio_max}`)
-    if (categoria) filters.push(`categoria = '${categoria}'`)
-    if (metal) filters.push(`metal = '${metal}'`)
+    const addFilter = (field, comparator, value) => {
+        values.push(value)
+        filters.push(`${field} ${comparator} $${filters.length + 1}`)
+    }
+
+    if (precio_min) addFilter('precio', '>=', precio_min)
+    if (precio_max) addFilter('precio', '<=', precio_max)
+    if (categoria) addFilter('categoria', '=', categoria)
+    if (metal) addFilter('metal', '=', metal)
 
     let query = 'SELECT * FROM inventario'
     if (filters.length > 0) {
@@ -34,11 +40,10 @@ export const getJoyasFilterModel = async ({ precio_min, precio_max, categoria, m
         query += ` WHERE ${filters}`
     }
 
-    const { rows: joyas } = await pool.query(query)
+    const { rows: joyas } = await pool.query(query, values)
 
     console.log(joyas)
     return joyas
 }
-
 
 getJoyasFilterModel({ precio_min: 25000, precio_max: 30000, categoria: 'aros', metal: 'plata' })
