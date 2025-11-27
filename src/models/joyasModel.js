@@ -42,9 +42,6 @@ export const getJoyasFilterModel = async ({ precio_min, precio_max, categoria, m
     }
 
     const { rows: joyas } = await pool.query(query, values)
-
-    console.log(joyas)
     return joyas
 }
 
-getJoyasFilterModel({ precio_min: 25000, precio_max: 30000, categoria: 'aros', metal: 'plata' })
